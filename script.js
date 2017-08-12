@@ -1,11 +1,12 @@
 var cells = document.getElementsByTagName("td");
 var cellsChar = [];
 var prevExpressions = new Stack();
+var inLn = $("input-line");
+var ansLn = $("answer-line");
 
 window.onload = function() {
   for(var i = 0; i < cells.length; i++) {
     cells[i].addEventListener("click", handleClick);
-    cells[i].id = "input" + cells[i].innerText;
     cellsChar.push(cells[i].innerText);
   }
   window.addEventListener("keydown", handleKey);
@@ -14,7 +15,7 @@ window.onload = function() {
     // Let's define our first command. First the text we expect, and then the function it should call
     var commands = {
       'what is *expression': function(exp) {
-        $('#input-line').innerHTML = exp;
+        inLn.innerHTML = exp;
         alert("works");
       }
     };
@@ -29,42 +30,70 @@ window.onload = function() {
 
 var handleClick = function(e) {
   if(e.target.innerHTML === "=") {
-    prevExpressions.push($("input-line").innerText);
-    $("input-line").innerHTML =  $("answer-line").innerText;
+    prevExpressions.push(inLn.innerText);
+    addEntry();
+    inLn.innerHTML = ansLn.innerText;
   }
   else if(e.target.innerHTML === "C") {
-    prevExpressions.push($("input-line").innerText);
-    $("input-line").innerHTML = "";
-    $("answer-line").innerHTML = "";
+    prevExpressions.push(inLn.innerText);
+    inLn.innerHTML = "";
+    ansLn.innerHTML = "";
+  }
+  else if(e.target.id === "backspace") {
+    inLn.innerText = inLn.innerText.substring(0, inLn.innerText.length - 1);
+    ansLn.innerHTML = eval(inLn.innerText.replace(/["^"]/g, "**"));
   }
   else {
-    $("input-line").innerHTML += e.target.innerHTML;
-    $("answer-line").innerHTML = eval($("input-line").innerText);
+    inLn.innerHTML += (e.target.className === "function") ?
+    e.target.innerHTML + "(" : e.target.innerHTML;
+    ansLn.innerHTML = eval(formatExpression(inLn.innerText, e.target.innerHTML));
   }
 };
 
 var handleKey = function(e) {
   //Pressing enter or =
   if(e.keyCode === 13 || e.key === "=") {
-    prevExpressions.push($("input-line").innerText);
-    $("input-line").innerHTML = $("answer-line").innerText;
+    prevExpressions.push(inLn.innerText);
+    addEntry();
+    inLn.innerHTML = ansLn.innerText;
   }
   //Pressing up arrow key
   if(e.keyCode === 38) {
-    $("input-line").innerText = prevExpressions.pop();
+    inLn.innerText = prevExpressions.pop();
+    ansLn.innerHTML = eval(inLn.innerText.replace(/["^"]/g, "**"));
   }
   //Pressing escape or c
   else if(e.keyCode === 27 || e.key.toLowerCase() === "c") {
-    prevExpressions.push($("input-line").innerText);
-    $("input-line").innerHTML = "";
-    $("answer-line").innerHTML = "";
+    prevExpressions.push(inLn.innerText);
+    inLn.innerHTML = "";
+    ansLn.innerHTML = "";
+  }
+  //Pressing backspace
+  else if(e.keyCode === 8) {
+    inLn.innerText = inLn.innerText.substring(0, inLn.innerText.length - 1);
+    ansLn.innerHTML = eval(inLn.innerText.replace(/["^"]/g, "**"));
   }
   //Pressing other key on calculator
   else if(cellsChar.indexOf(e.key) > -1) {
-    $("input-line").innerHTML += e.key;
-    $("answer-line").innerHTML = eval($("input-line").innerText);
+    inLn.innerHTML += e.key;
+    ansLn.innerHTML = eval(inLn.innerText.replace(/["^"]/g, "**"));
   }
 };
+
+function formatExpression(str, func) {
+  str = str.replace(/["^"]/g, "**");
+  str = str.replace(/(sin)|(cos)|(tan)|(log)/g, "Math." + "$&");
+  return str;
+}
+
+function addEntry() {
+  var inNode = document.createElement("p");
+  var ansNode = document.createElement("p");
+  inNode.innerText = inLn.innerText;
+  ansNode.innerHTML = "=" + ansLn.innerText + "<br><br>";
+  $("history").appendChild(inNode);
+  $("history").appendChild(ansNode);
+}
 
 //Stack data structure
 function Stack() {
@@ -75,8 +104,14 @@ function Stack() {
   this.push = function(item) {
     this.stack.push(item);
   };
+  this.peek = function() {
+    return this.stack.length > 0 ?
+      this.stack[this.stack.length] : "";
+  };
+  this.isEmpty = function() {
+    return this.stack.length === 0;
+  };
 }
-
 
 //Alias function
 function $(id) {
