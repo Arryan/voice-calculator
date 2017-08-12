@@ -1,0 +1,75 @@
+#wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  min-height: 100%;
+  background-color: #102027;
+  color: white;
+  font-family: 'Exo 2', sans-serif;
+  overflow: hidden;
+}
+#display {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% - 20px);
+  height: 35%;
+  padding: 10px;
+}
+#input-line {
+  position: absolute;
+  right: 10px;
+  width: 75%;
+  height: 50%;
+  font-size: 8vw;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+#answer-line {
+  position: absolute;
+  right: 10px;
+  width: 75%;
+  height: 50%;
+  top: 50%;
+  font-size: 5vw;
+  color: #009688;
+  text-align: right;
+}
+#history {
+  position: absolute;
+  width: calc(20% - 10px);
+  height: calc(100% + 20px);
+  left: 0;
+  top: 0;
+  overflow-y: scroll;
+  padding: 5px;
+  line-height: 0.5em;
+}
+#input {
+  position: absolute;
+  top: calc(35% + 40px);
+  left: 0;
+  width: 100%;
+  height: calc(65% - 40px);
+}
+table {
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  text-align: center;
+  border-collapse: separate;
+  border-spacing: 10px;
+  margin: -10px;
+}
+td {
+  background-color: rgba(0, 0, 0, 0.03);
+  border: hidden black 20px;
+  font-size: 7vh;
+  transition: background-color 0.5s ease-out;
+  transition-duration: 0.5s;
+  width: 20%;
+  height: 20%;
+}
+td:hover, td:active {
+  background-color: #37474f;
+}
