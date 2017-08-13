@@ -16,6 +16,7 @@ window.onload = function() {
     var commands = {
       'what is *expression': function(exp) {
         inLn.innerHTML = formatExpression(exp);
+        ansLn.innerHTML = eval(inLn.innerHTML);
       }
     };
 
