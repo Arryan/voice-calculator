@@ -15,8 +15,7 @@ window.onload = function() {
     // Let's define our first command. First the text we expect, and then the function it should call
     var commands = {
       'what is *expression': function(exp) {
-        inLn.innerHTML = exp;
-        alert("works");
+        inLn.innerHTML = formatExpression(exp);
       }
     };
 
@@ -82,6 +81,13 @@ var handleKey = function(e) {
 
 function formatExpression(str, func) {
   str = str.replace(/["^"]/g, "**");
+  str = str.replace(/( )|(of)/g, "");
+  str = str.replace(/(cosine)/g, "cos(");
+  str = str.replace(/(sine)/g, "sin(");
+  str = str.replace(/(Open Bracket)/g, "(");
+  str = str.replace(/(Closing Bracket)/g, ")");
+  str = str.replace(/(times)/g, "*");
+  str = str.replace(/(to the power of 5)/g, "**");
   str = str.replace(/(sin)|(cos)|(tan)|(log)/g, "Math." + "$&");
   return str;
 }
@@ -117,3 +123,5 @@ function Stack() {
 function $(id) {
   return document.getElementById(id);
 }
+
+
